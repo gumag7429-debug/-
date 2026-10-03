@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>병맛 칭호 뽑기방</title>
+<link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#bfe3f2;--ink:#1b1b3a;--card:#fff;--red:#e63946;--yel:#ffd23f;--mute:#4a5a78;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#16213a;--ink:#f4f1ff;--card:#232f50;--mute:#a9b6d6}}
+:root[data-theme="dark"]{--bg:#16213a;--ink:#f4f1ff;--card:#232f50;--mute:#a9b6d6}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Jua','Apple SD Gothic Neo','Malgun Gothic',sans-serif;min-height:100vh}
+main{max-width:480px;margin:0 auto;padding:16px}
+h1{font-size:30px;margin:4px 0 6px}
+.bar{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:12px}
+.coin{background:var(--yel);color:#1b1b3a;border-radius:999px;padding:6px 14px;font-size:15px}
+.small{font-size:14px;color:var(--mute)}
+.machine{background:var(--card);border:3px solid var(--ink);border-radius:24px;padding:16px;text-align:center}
+.stage{min-height:210px;border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:10px;border:3px solid var(--c,var(--ink));box-shadow:0 0 22px var(--c,transparent);transition:box-shadow .3s}
+.big{font-size:76px;line-height:1.1}
+.nm{font-size:24px;word-break:keep-all}
+.fl{opacity:.55}
+.tag{display:inline-block;border-radius:999px;padding:2px 12px;color:#fff;background:var(--c);font-size:15px}
+.btns{display:flex;gap:10px;margin-top:12px}
+button,input{font:inherit}
+button{font-size:21px;border:3px solid var(--ink);border-radius:16px;padding:14px;background:var(--red);color:#fff;flex:1;cursor:pointer}
+button.alt{background:var(--yel);color:#1b1b3a;flex:.6}
+button.alt.on{background:#2ec4b6}
+button.sm{font-size:15px;padding:6px 10px;flex:none;background:var(--card);color:var(--ink);border-width:2px;border-radius:999px}
+button.sm.on{background:var(--ink);color:var(--card)}
+button:disabled{opacity:.5;cursor:not-allowed}
+button:focus-visible,input:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.log{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;margin-top:10px}
+.chip{border-radius:999px;padding:2px 8px;font-size:12px;color:#fff;background:var(--c)}
+.item{position:relative;border:2px solid var(--ink);border-radius:12px;padding:6px 3px;background:var(--card);text-align:center;font-size:11px;line-height:1.25;box-shadow:inset 0 -5px 0 var(--c);word-break:keep-all;cursor:pointer}
+.item b{display:block;font-size:24px;font-weight:400}
+.item.no{opacity:.3;filter:grayscale(1);cursor:default}
+.item.eq{outline:3px solid var(--ink)}
+.r0{--c:#9aa5b8}.r1{--c:#3b82f6}.r2{--c:#a855f7}.r3{--c:#f59e0b}.r4{--c:#ec4899}.r5{--c:#14b8a6}.r6{--c:#ef4444}.r7{--c:#84cc16}
+.r5.chip,.r6.chip,.r7.chip,.r4.chip,.tag.r4,.tag.r5,.tag.r6,.tag.r7{background-image:linear-gradient(110deg,var(--c),#ffd23f,#3b82f6,var(--c));background-size:300% 100%;animation:shine 3s linear infinite}
+@keyframes shine{to{background-position:300% 0}}
+@keyframes pop{from{transform:scale(.5)}to{transform:scale(1)}}
+.pop{animation:pop .35s}
+h2{font-size:20px;margin:18px 0 6px}
+.col{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.pg{display:flex;justify-content:center;align-items:center;gap:10px;margin-top:10px}
+.pg input{width:64px;border:2px solid var(--ink);border-radius:10px;padding:4px;background:var(--card);color:var(--ink)}
+.rates{display:flex;flex-direction:column;gap:3px}
+.rates span:before{content:"";display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--c);margin-right:6px}
+#fl{position:fixed;inset:0;pointer-events:none;background:var(--c);opacity:0;z-index:8}
+#fl.go{animation:fo .7s}
+@keyframes fo{0%{opacity:.75}100%{opacity:0}}
+#cut{position:fixed;inset:0;background:rgba(10,8,30,.93);display:none;align-items:center;justify-content:center;flex-direction:column;gap:10px;text-align:center;color:#fff;padding:24px;z-index:9;cursor:pointer}
+#cut.show{display:flex}
+#cut .big{font-size:110px}#cut .nm{font-size:30px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+.stage{position:relative;overflow:hidden;background:var(--card)}
+.stage>*{position:relative;z-index:1}
+.stage::before{content:"";position:absolute;inset:-60%;background:conic-gradient(var(--c,transparent),transparent 25%,var(--c,transparent) 50%,transparent 75%,var(--c,transparent));opacity:var(--ao,.1);animation:spin 5s linear infinite;transition:opacity .3s}
+@keyframes spin{to{transform:rotate(360deg)}}
+.q{font-size:16px;font-style:italic}
+#roll{position:relative;overflow:hidden}
+#roll i{position:absolute;left:0;top:0;bottom:0;width:0;background:rgba(255,255,255,.4)}
+#roll span{position:relative}
+.s1{animation:shk .5s}.s2{--a:14px;animation:shk .9s}
+@keyframes shk{0%,100%{transform:none}10%{transform:translate(calc(var(--a,6px)*-1),var(--a,6px))}30%{transform:translate(var(--a,6px),calc(var(--a,6px)*-1))}50%{transform:translate(calc(var(--a,6px)*-1),calc(var(--a,6px)*-.5))}70%{transform:translate(var(--a,6px),var(--a,6px))}90%{transform:translate(calc(var(--a,6px)*-.5),0)}}
+#cut{overflow:hidden}
+#cut::before{content:"";position:absolute;inset:-60%;background:repeating-conic-gradient(var(--c) 0 6deg,transparent 6deg 18deg);opacity:.25;animation:spin 10s linear infinite}
+#cut>*{position:relative}
+#cut .nm{animation:zoom .6s}
+@keyframes zoom{from{transform:scale(3);opacity:0}to{transform:scale(1);opacity:1}}
+</style>
+</head>
+<body>
+<main>
+<h1>병맛 칭호 뽑기방</h1>
+<div class="small" id="eq" style="margin-bottom:10px"></div>
+<div class="bar"><div class="coin" id="best">최고 칭호: 없음</div><div class="small" id="stat"></div><button class="sm" id="snd" aria-label="소리">🔊</button></div>
+<section class="machine">
+<div class="stage" id="stage" aria-live="polite"><div class="big">🎰</div><div class="nm">누르면 바로 뽑아요</div></div>
+<div class="btns"><button id="roll"><i id="cdb"></i><span id="rt">뽑기!</span></button><button id="auto" class="alt">자동 OFF</button></div>
+<button id="luck" class="alt" style="width:100%;margin-top:10px;font-size:16px;padding:10px">🍀 행운의 똥</button><div class="small" id="lk"></div><div class="log" id="log"></div>
+</section>
+<h2>등급별 확률</h2>
+<div class="rates small" id="rates"></div>
+<h2>칭호 도감 <span class="small" id="cnt"></span></h2>
+<div class="tabs" id="tabs"></div>
+<div class="col" id="col"></div>
+<div class="pg"><button class="sm" id="pv">이전</button><span class="small" id="pn"></span><button class="sm" id="nx">다음</button><input id="go" type="number" min="1" placeholder="쪽" aria-label="쪽 이동"></div>
+</main>
+<div id="fl"></div><canvas id="fx" style="position:fixed;inset:0;pointer-events:none;z-index:10"></canvas>
+<div id="cut"></div>
+<script>
+const NO='🧦양말 📺리모컨 🍙삼각김밥 🩴슬리퍼 🥒치킨무 🍗치킨 🍜라면 🍕피자 🥔감자 🍌바나나 🥚계란 🍞식빵 🧀치즈 🥟만두 🍢어묵 🍡떡꼬치 🧋버블티 ☕아메리카노 🍺맥주 🍦아이스크림 🍩도넛 🥐크루아상 🐔닭 🐷돼지 🐸개구리 🐧펭귄 🦆오리 🐟붕어 🦖공룡 🐌달팽이 🦀게 🐙문어 🐻곰돌이 🐱냥이 🐶댕댕이 🐀쥐 🦄유니콘 👻유령 💩똥 🤡광대 👽외계인 🤖로봇 🧟좀비 🧙마법사 🥷닌자 👶아기 👴할아버지 🧓할머니 🚽변기 🛁욕조 🛏️침대 🪑의자 💡전구 🔋건전지 📱폰 💻노트북 🖱️마우스 ⌨️키보드 🎮게임기 📦택배 🚌버스 🚇지하철 🛵오토바이 🚲자전거 🚀로켓 🛸UFO ⛺텐트 🏝️섬 🌋화산 🌪️태풍 ☃️눈사람 ⛱️파라솔 🔥불꽃 💧물방울 ⚡번개 🌈무지개 🌙달 ☀️태양 ⭐별 🪐행성 🗿모아이 🎈풍선 🎁선물 🎲주사위 🎯과녁 🪀요요 🧲자석 🧪물약 💊알약 🩹밴드 🧻휴지 🪣양동이 🧹빗자루 🔨망치 🥄숟가락 ✂️가위 📌압정 🎩모자 👓안경 🩲팬티 👑왕관'.split(' ').map(s=>{const m=s.match(/^(\p{Extended_Pictographic}\uFE0F?)(.*)$/u);return [m[1],m[2]]});
+const T=[
+{n:'일반',c:55000,p:55,a:'방귀 뀌고 도망친,양말 한 짝 잃어버린,삼각김밥 까다 실패한,충전기 안 가져온,엘베 닫힘 누른,콧물 흘리는,라면 불은,이불 밖은 위험한,월급이 스쳐간,알람 5번 끈'},
+{n:'레어',c:28000,p:28,a:'치킨 다리 양보한,마라탕 3단계 먹은,카톡 1이 안 사라진,새벽에 냉장고 연,옆자리 코골이하는,택시 기사님과 싸운,편의점 1+1 노리는,지하철서 졸다 내린,전여친 스토리 본,배달 별점 1개 준'},
+{n:'에픽',c:11000,p:11,a:'손가락 10개로 코딩하는,키보드 부순,클릭 3만 번 한,티어 강등된,새벽 치킨에 영혼 판,현실 도피 마스터인,보스 앞에서 방귀 뀐,망치로 서버 때린,탈모 샴푸 쓰는,전설 소환 실패한'},
+{n:'전설',c:4000,p:4,a:'엉덩이로 우주 구한,방귀로 태풍 일으킨,숨만 쉬어도 레벨업하는,김치로 세계 정복한,라면 끓이다 신이 된,치킨 한 마리로 환생한,샤워하다 득도한,양말만 신고 지구 지킨,똥 싸다 깨달은,코딱지로 은하 만든'},
+{n:'신화',c:1500,p:1.5,a:'우주의 똥을 먹은,시간선이 꼬인,원작자가 포기한,신이 버그라 부르는,현실을 로딩 중인,작가가 설정 까먹은,GM이 삭제 못 한,확률이 비명 지른,3차원을 탈출한,다음 화에서 살아온'},
+{n:'초월',c:400,p:.4,a:'존재 자체가 오류인,차원 이탈한 개그의,법칙이 도망간,우주 서버 터뜨린,신이 두 손 든'},
+{n:'우주',c:90,p:.09,a:'은하계 병맛 연합회장인'},
+{n:'병맛신',c:10,p:.01,a:'창조주조차 말리지 못한'}];
+const Q=[['평범하네요. 인생처럼.','…다음!','아무도 안 궁금해합니다.','이걸로 뭘 하죠?'],
+['오 쫌 하는데?','엄마가 좋아하겠네요.','나쁘지 않은 똥손.'],
+['잠깐, 이거 실화?','치킨 시켜도 되는 수준!','옆자리 사람이 쳐다봅니다.'],
+['손이 떨립니다!!','방금 심장이 멈췄습니다.','로또 사러 가세요.'],
+['서버실에서 비명이 들립니다.','당신은 선택받았습니다 (오류로).','GM이 식은땀 흘립니다.'],
+['현실이 흔들립니다.','지금 캡처 안 하면 후회합니다.'],
+['우주가 방귀를 뀝니다.','은하계 개그 연합 긴급소집!'],
+['이 확률은 법적 문제입니다.','당신이 방금 우주를 웃겼습니다.']];
+const SF='지망생 알바생 반장 호소인 전문가 사장님 장인 박사 달인 도둑'.split(' '),SG='지배자 대마왕 황제 창조주 수호신 정복자 심판자 폭주족 챔피언 갓'.split(' ');
+let off=0;T.forEach(t=>{t.a=t.a.split(',');t.o=off;off+=t.c;t.odds=Math.round(100/t.p)});
+const TOTAL=off,COL=['#9aa5b8','#3b82f6','#a855f7','#f59e0b','#ec4899','#14b8a6','#ef4444','#84cc16'],N=NO.length;
+function info(id){let ti=T.length-1;while(id<T[ti].o)ti--;const t=T[ti],A=t.a.length,k=id-t.o,no=NO[k%N],sf=ti>=3?SG:SF,ed=Math.floor(k/(N*A*10))+1;
+return {id,ti,e:no[0],name:t.a[Math.floor(k/N)%A]+' '+no[1]+' '+sf[Math.floor(k/(N*A))%10]+(ed>1?' 제'+ed+'기':'')}}
+let S={got:{},pulls:0,eq:-1,best:-1,log:[]};
+try{const s=JSON.parse(localStorage.getItem('luckgacha4')||'null');if(s)S=Object.assign(S,s)}catch(e){}
+const $=id=>document.getElementById(id);
+function save(){try{localStorage.setItem('luckgacha4',JSON.stringify(S))}catch(e){}}
+const pick=a=>a[Math.floor(Math.random()*a.length)],RM=matchMedia('(prefers-reduced-motion:reduce)').matches;
+let AC=null,mute=false,luckN=0,busy=false,autoOn=false,cutting=false,cutT=0,rainI=0,P=[],raf=0;
+function sfx(f,d,ty,v){if(mute)return;try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();const o=AC.createOscillator(),g=AC.createGain(),t=AC.currentTime;o.type=ty||'square';o.frequency.value=f;g.gain.setValueAtTime(v||.05,t);g.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(g);g.connect(AC.destination);o.start();o.stop(t+d)}catch(e){}}
+function chord(ti){for(let i=0;i<ti+3;i++)setTimeout(()=>sfx(260*Math.pow(1.26,i),.35,ti>=4?'sawtooth':'triangle',.06),i*80)}
+const cv=$('fx'),cx=cv.getContext('2d');
+function fit(){cv.width=innerWidth;cv.height=innerHeight}addEventListener('resize',fit);fit();
+function burst(ti,em,n,x,y){if(RM)return;for(let i=0;i<n;i++){const a=Math.random()*6.28,s=4+Math.random()*(6+ti*2);P.push({x:x==null?innerWidth/2:x,y:y==null?innerHeight*.4:y,vx:Math.cos(a)*s,vy:Math.sin(a)*s-5,l:60+Math.random()*50,r:Math.random()*6,vr:(Math.random()-.5)*.4,t:Math.random()<.45?em:null,c:Math.random()<.5?COL[ti]:'#ffd23f',z:14+Math.random()*22})}if(!raf)raf=requestAnimationFrame(loop)}
+function loop(){cx.clearRect(0,0,cv.width,cv.height);P=P.filter(p=>p.l>0);P.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.28;p.vx*=.99;p.l--;p.r+=p.vr;cx.save();cx.globalAlpha=Math.min(1,p.l/25);cx.translate(p.x,p.y);cx.rotate(p.r);if(p.t){cx.font=p.z+'px serif';cx.fillText(p.t,0,0)}else{cx.fillStyle=p.c;cx.fillRect(-p.z/4,-p.z/8,p.z/2,p.z/4)}cx.restore()});raf=P.length?requestAnimationFrame(loop):0}
+function shake(ti){const m=document.querySelector('main');m.classList.remove('s1','s2');void m.offsetWidth;m.classList.add(ti>=5?'s2':'s1')}
+function roll(){const L=luckN>0?4:1;if(luckN>0)luckN--;
+let pr=T.map((t,i)=>t.p*(i>=3?L:1));const hi=pr.slice(3).reduce((a,b)=>a+b,0),lo=pr.slice(0,3).reduce((a,b)=>a+b,0),k=(100-hi)/lo;
+pr=pr.map((p,i)=>i<3?p*k:p);let x=Math.random()*100,ti=T.length-1,a=0;
+for(let i=0;i<pr.length;i++){a+=pr[i];if(x<a){ti=i;break}}
+return info(T[ti].o+Math.floor(Math.random()*T[ti].c))}
+const tg=o=>'<span class="tag r'+o.ti+'">'+T[o.ti].n+'</span>';
+function flash(c){const f=$('fl');f.style.setProperty('--c',c);f.classList.remove('go');void f.offsetWidth;f.classList.add('go')}
+function nextAuto(){if(autoOn&&!busy&&!cutting)setTimeout(()=>{if(autoOn&&!busy&&!cutting)go()},300)}
+function hideCut(){clearTimeout(cutT);clearInterval(rainI);$('cut').classList.remove('show');cutting=false;nextAuto()}
+function cd(ms){const t0=performance.now(),b=$('cdb');(function st(){const e=performance.now()-t0;if(e<ms){b.style.width=(100-e/ms*100)+'%';$('rt').textContent='쿨타임 '+((ms-e)/1000).toFixed(1)+'초';requestAnimationFrame(st)}else{b.style.width='0';$('rt').textContent='뽑기!';busy=false;$('roll').disabled=false;nextAuto()}})()}
+function go(){if(busy||cutting)return;busy=true;$('roll').disabled=true;$('rt').textContent='뽑는 중…';
+const o=roll(),st=$('stage'),dur=o.ti>=4?1700:o.ti>=2?1000:650;st.style.setProperty('--c','var(--ink)');st.style.setProperty('--ao',.1);
+let n=0;const iv=setInterval(()=>{const r=info(Math.floor(Math.random()*TOTAL));n++;st.innerHTML='<div class="big fl">'+r.e+'</div><div class="nm fl">'+r.name+'</div>';sfx(300+n*14,.05,'square',.03)},55);
+if(o.ti>=2)setTimeout(()=>{st.style.setProperty('--c',COL[o.ti]);st.style.setProperty('--ao',.5);sfx(110,.4,'sawtooth',.06)},dur-450);
+setTimeout(()=>{clearInterval(iv);land(o)},dur)}
+function land(o){const nw=!S.got[o.id];S.got[o.id]=(S.got[o.id]||0)+1;S.pulls++;
+if(S.best<0||o.ti>info(S.best).ti)S.best=o.id;
+S.log.unshift(o.id);S.log=S.log.slice(0,10);
+const st=$('stage');st.style.setProperty('--c',COL[o.ti]);st.style.setProperty('--ao',.15+o.ti*.1);
+st.innerHTML='<div class="big pop">'+o.e+'</div><div class="nm pop">'+o.name+'</div>'+tg(o)+'<div class="small">1 in '+T[o.ti].odds.toLocaleString()+(nw?' · NEW!':' · 중복 x'+S.got[o.id])+'</div><div class="q">'+pick(Q[o.ti])+'</div>';
+if(o.ti>=2){flash(COL[o.ti]);burst(o.ti,o.e,10+o.ti*14)}
+if(o.ti>=3)shake(o.ti);
+chord(o.ti);save();render();
+if(o.ti>=4){cutting=true;const c=$('cut');c.style.setProperty('--c',COL[o.ti]);
+c.innerHTML=tg(o)+'<div class="big pop">'+o.e+'</div><div class="nm">'+o.name+'</div><div>1 in '+T[o.ti].odds.toLocaleString()+'</div><div class="q">'+pick(Q[o.ti])+'</div><div class="small">눌러서 닫기</div>';
+c.classList.add('show');if(o.ti>=5)rainI=setInterval(()=>burst(o.ti,o.e,16,Math.random()*innerWidth,innerHeight*.25),300);
+cutT=setTimeout(hideCut,o.ti>=6?4500:3200)}
+cd(1000+o.ti*350)}
+const LCD=60000;
+function tickLuck(){const l=LCD-(Date.now()-(S.luckAt||0)),b=$('luck');
+if(l>0){b.disabled=true;b.textContent='🍀 행운의 똥 쿨타임 '+Math.ceil(l/1000)+'초'}else{b.disabled=false;b.textContent='🍀 행운의 똥 먹기 (10회 동안 전설 이상 x4)'}
+$('lk').textContent=luckN>0?'행운 x4 발동 중! 남은 '+luckN+'회':''}
+$('luck').onclick=()=>{S.luckAt=Date.now();luckN=10;save();sfx(660,.25,'triangle',.08);burst(1,'🍀',30);tickLuck()};
+setInterval(tickLuck,250);tickLuck();
+$('snd').onclick=()=>{mute=!mute;$('snd').textContent=mute?'🔇':'🔊'};
+let flt=-1,pg=0,own=false;const PS=40;
+function list(){const a=flt<0?0:T[flt].o,b=flt<0?TOTAL:a+T[flt].c;
+if(own){const l=Object.keys(S.got).map(Number).filter(i=>i>=a&&i<b).sort((x,y)=>x-y);return {n:l.length,at:i=>l[i]}}
+return {n:b-a,at:i=>a+i}}
+function renderCol(){const L=list(),pp=Math.max(1,Math.ceil(L.n/PS));pg=Math.max(0,Math.min(pg,pp-1));
+let h='';for(let i=pg*PS;i<Math.min(L.n,pg*PS+PS);i++){const id=L.at(i),o=info(id),g=S.got[id];
+h+=g?'<div class="item r'+o.ti+(S.eq===id?' eq':'')+'" data-id="'+id+'"><b>'+o.e+'</b>'+o.name+(g>1?' x'+g:'')+'</div>':'<div class="item no r'+o.ti+'"><b>?</b>#'+(id+1).toLocaleString()+'</div>'}
+$('col').innerHTML=h||'<div class="small">아직 없어요</div>';$('pn').textContent=(pg+1).toLocaleString()+' / '+pp.toLocaleString();$('pv').disabled=pg==0;$('nx').disabled=pg>=pp-1}
+function render(){$('stat').textContent='총 '+S.pulls.toLocaleString()+'회 뽑음';
+if(S.best>=0){const b=info(S.best);$('best').textContent='최고: '+T[b.ti].n+' · '+b.name}
+$('cnt').textContent=Object.keys(S.got).length.toLocaleString()+' / '+TOTAL.toLocaleString();
+if(S.eq>=0&&S.got[S.eq]){const o=info(S.eq);$('eq').innerHTML='대표 칭호 <span class="tag r'+o.ti+'">'+o.e+' '+o.name+'</span>'}
+else $('eq').textContent='도감에서 칭호를 눌러 대표 칭호로 정해보세요';
+$('log').innerHTML=S.log.map(i=>{const o=info(i);return '<span class="chip r'+o.ti+'">'+o.e+' '+T[o.ti].n+'</span>'}).join('');
+renderCol()}
+$('roll').onclick=go;
+$('auto').onclick=()=>{autoOn=!autoOn;$('auto').textContent='자동 '+(autoOn?'ON':'OFF');$('auto').classList.toggle('on',autoOn);if(autoOn)go()};
+$('cut').onclick=hideCut;
+$('pv').onclick=()=>{pg--;renderCol()};$('nx').onclick=()=>{pg++;renderCol()};
+$('go').onchange=()=>{pg=(+$('go').value||1)-1;renderCol()};
+$('col').onclick=e=>{const c=e.target.closest('[data-id]');if(!c)return;S.eq=+c.dataset.id;save();render();window.scrollTo({top:0,behavior:'smooth'})};
+$('tabs').innerHTML=['전체'].concat(T.map(t=>t.n)).map((n,k)=>'<button class="sm'+(k==0?' on':'')+'" data-k="'+(k-1)+'">'+n+'</button>').join('')+'<button class="sm" id="own">보유만</button>';
+$('tabs').onclick=e=>{const b=e.target.closest('button');if(!b)return;
+if(b.id=='own'){own=!own;b.classList.toggle('on',own)}else{flt=+b.dataset.k;[...$('tabs').children].forEach(x=>{if(x.id!='own')x.classList.toggle('on',x===b)})}
+pg=0;renderCol()};
+$('rates').innerHTML=T.map((t,k)=>'<span style="--c:'+COL[k]+'">'+t.n+' · 1 in '+t.odds.toLocaleString()+' ('+t.c.toLocaleString()+'종)</span>').join('');
+render();
+</script>
+</body>
+</html>
